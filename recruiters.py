@@ -1,7 +1,6 @@
 """Recruiters of judicious humans."""
 
 import logging
-import os
 
 import boto3
 
@@ -51,10 +50,10 @@ class MTurkRecruiter(Recruiter):
             raise ValueError(f'mode is "{self.mode}", must be "sandbox" or "live"')
 
     def create_hit_type(self, **kwargs):
-        response = self._client.request(
+        response = self._client.create_hit_type(
             AutoApprovalDelayInSeconds=123,
             AssignmentDurationInSeconds=3600,
-            Reward=0.01,
+            Reward='0.01',
             Title='Judicious Test',
             Keywords='key, words',
             Description='the description'
@@ -68,15 +67,16 @@ class MTurkRecruiter(Recruiter):
     def recruit(self):
         if self.mode == "sandbox":
             # HITTypeId = os.environ["JUDICIOUS_MTURK_HIT_TYPE_ID_SANDBOX"]
-            HITTypeId = self._create_hit_type()
+            HITTypeId = self.create_hit_type()
             logger.info(f'HITTypeId is {HITTypeId}')
         elif self.mode == "live":
-            HITTypeId = os.environ["JUDICIOUS_MTURK_HIT_TYPE_ID_LIVE"]
+            assert 0
+            # HITTypeId = os.environ["JUDICIOUS_MTURK_HIT_TYPE_ID_LIVE"]
 
         response = self._client.create_hit_with_hit_type(
             HITTypeId=HITTypeId,
             MaxAssignments=9,
-            LifetimeInSeconds=int(os.environ["JUDICIOUS_MTURK_LIFETIME"]),
+            LifetimeInSeconds=3600,
             Question=open("external.xml", "r").read(),
         )
         logger.info("Created HIT with ID {}".format(response['HIT']['HITId']))
