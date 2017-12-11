@@ -53,7 +53,7 @@ class MTurkRecruiter(Recruiter):
         response = self._client.create_hit_type(
             AutoApprovalDelayInSeconds=123,
             AssignmentDurationInSeconds=3600,
-            Reward='0.01',
+            Reward='0.02',
             Title='Judicious Test',
             Keywords='key, words',
             Description='the description'
@@ -75,7 +75,7 @@ class MTurkRecruiter(Recruiter):
 
         response = self._client.create_hit_with_hit_type(
             HITTypeId=HITTypeId,
-            MaxAssignments=9,
+            MaxAssignments=4,
             LifetimeInSeconds=3600,
             Question=open("external.xml", "r").read(),
         )
