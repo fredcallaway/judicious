@@ -22,7 +22,7 @@ formatter = logging.Formatter(
         '%(asctime)s [clock.1]: %(message)s')
 handler.setFormatter(formatter)
 logger.addHandler(handler)
-logger.setLevel(logging.DEBUG)
+logger.setLevel(logging.WARNING)
 
 # Set up scheduler.
 sched = BlockingScheduler()
