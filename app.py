@@ -48,8 +48,8 @@ db = SQLAlchemy(app)
 # from psycopg2 import connect
 # from pq import PQ
 # conn = connect('dbname=test108 user=postgres')
-# pq = PQ(conn)
 # pq.create()
+# pq = PQ(conn)
 
 sentry = Sentry(app)
 
