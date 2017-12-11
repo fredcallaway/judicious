@@ -29,6 +29,7 @@ class HotAirRecruiter(Recruiter):
         logger.info("Recruiting a participant.")
 
 
+
 class MTurkRecruiter(Recruiter):
     """Recruits from Amazon Mechanical Turk."""
 
@@ -45,6 +46,19 @@ class MTurkRecruiter(Recruiter):
                 service_name='mturk',
                 region_name="us-east-1",
             )
+        else:
+            raise ValueError(f'mode is "{self.mode}", must be "sandbox" or "live"')
+
+    def create_hit_type(self, **kwargs):
+        response = self._client.request(
+            AutoApprovalDelayInSeconds=123,
+            AssignmentDurationInSeconds=3600,
+            Reward=0.01,
+            Title='Judicious Test',
+            Keywords='key, words',
+            Description='the description'
+        )
+        return response['HITTypeId']
 
     def _print_balance(self):
         balance = self.client.get_account_balance()['AvailableBalance']
@@ -52,7 +66,8 @@ class MTurkRecruiter(Recruiter):
 
     def recruit(self):
         if self.mode == "sandbox":
-            HITTypeId = os.environ["JUDICIOUS_MTURK_HIT_TYPE_ID_SANDBOX"]
+            # HITTypeId = os.environ["JUDICIOUS_MTURK_HIT_TYPE_ID_SANDBOX"]
+            HITTypeId = self._create_hit_type()
         elif self.mode == "live":
             HITTypeId = os.environ["JUDICIOUS_MTURK_HIT_TYPE_ID_LIVE"]
 
