@@ -29,16 +29,33 @@ app = Flask(__name__)
 
 app.secret_key = os.environ["JUDICIOUS_SECRET_KEY"]
 
-DB_URL_DEFAULT = 'postgresql://postgres@localhost/judicious'
+DB_NAME = os.environ.get('DATABASE_NAME', 'test108')
+DB_URL_DEFAULT = f'postgresql://postgres@localhost/{DB_NAME}'
 DB_URL = os.environ.get("DATABASE_URL", DB_URL_DEFAULT)
+
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URL
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JUDICIOUS_LOG_LEVEL'] = os.environ["JUDICIOUS_LOG_LEVEL"]
 db = SQLAlchemy(app)
 
+# Create database if it doesn't already exist.
+# The server will crash on the first run, probably because
+# of a side effect of create_database
+from sqlalchemy_utils import database_exists, create_database
+if not database_exists(DB_URL):
+    create_database(DB_URL)
+
 sentry = Sentry(app)
 
 # Create the queues.
+
+
+# from psycopg2 import connect
+# from pq import PQ
+# conn = connect('dbname=test108 user=postgres')
+# pq = PQ(conn)
+# pq.create()
+
 conn = connect(DB_URL)
 pq = PQ(conn)
 
@@ -116,6 +133,7 @@ class Context(db.Model):
     tasks = db.relationship("Task", backref='context')
     persons = db.relationship("Person", backref='context')
 
+db.create_all()
 
 @app.context_processor
 def inject_sentry_dsn():
