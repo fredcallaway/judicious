@@ -34,7 +34,8 @@ class MTurkRecruiter(Recruiter):
     """Recruits from Amazon Mechanical Turk."""
 
     def __init__(self):
-        self.mode = os.environ["JUDICIOUS_MTURK_MODE"]
+        # self.mode = os.environ["JUDICIOUS_MTURK_MODE"]
+        self.mode = 'sandbox'
 
         if self.mode == "sandbox":
             self._client = boto3.client(
@@ -68,12 +69,13 @@ class MTurkRecruiter(Recruiter):
         if self.mode == "sandbox":
             # HITTypeId = os.environ["JUDICIOUS_MTURK_HIT_TYPE_ID_SANDBOX"]
             HITTypeId = self._create_hit_type()
+            logger.info(f'HITTypeId is {HITTypeId}')
         elif self.mode == "live":
             HITTypeId = os.environ["JUDICIOUS_MTURK_HIT_TYPE_ID_LIVE"]
 
         response = self._client.create_hit_with_hit_type(
             HITTypeId=HITTypeId,
-            MaxAssignments=1,
+            MaxAssignments=9,
             LifetimeInSeconds=int(os.environ["JUDICIOUS_MTURK_LIFETIME"]),
             Question=open("external.xml", "r").read(),
         )

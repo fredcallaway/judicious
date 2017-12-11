@@ -29,7 +29,7 @@ app = Flask(__name__)
 
 app.secret_key = os.environ["JUDICIOUS_SECRET_KEY"]
 
-DB_NAME = os.environ.get('DATABASE_NAME', 'test108')
+DB_NAME = os.environ.get('DATABASE_NAME', 'judicious')
 DB_URL_DEFAULT = f'postgresql://postgres@localhost/{DB_NAME}'
 DB_URL = os.environ.get("DATABASE_URL", DB_URL_DEFAULT)
 
