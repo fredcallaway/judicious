@@ -41,20 +41,17 @@ db = SQLAlchemy(app)
 # Create database if it doesn't already exist.
 # The server will crash on the first run, probably because
 # of a side effect of create_database
-from sqlalchemy_utils import database_exists, create_database
-if not database_exists(DB_URL):
-    create_database(DB_URL)
-
-sentry = Sentry(app)
-
+# from sqlalchemy_utils import database_exists, create_database
+# if not database_exists(DB_URL):
+#     create_database(DB_URL)
 # Create the queues.
-
-
 # from psycopg2 import connect
 # from pq import PQ
 # conn = connect('dbname=test108 user=postgres')
 # pq = PQ(conn)
 # pq.create()
+
+sentry = Sentry(app)
 
 conn = connect(DB_URL)
 pq = PQ(conn)
